@@ -33,7 +33,7 @@ var loadTasks = function() {
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    console.log(list, arr);
+    
     // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
@@ -79,6 +79,9 @@ $("#task-form-modal .btn-primary").click(function() {
     });
 
     saveTasks();
+    var saveTasks = function() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    };
   }
 });
 
@@ -89,9 +92,27 @@ $("#remove-tasks").on("click", function() {
     $("#list-" + key).empty();
   }
   saveTasks();
+  $(".list-group").on("click", "p", function() {
+    var text = $(this)
+      .text()
+      .trim();
+  });
 });
 
 // load tasks for the first time
 loadTasks();
+var loadTasks = function() {
+  tasks = JSON.parse(localStorage.getItem("tasks"));
+
+  // if nothing in localStorage, create a new object to track all task status arrays
+  if (!tasks) {
+    tasks = {
+      toDo: [],
+      inProgress: [],
+      inReview: [],
+      done: []
+    };
+  }
+};
 
 
