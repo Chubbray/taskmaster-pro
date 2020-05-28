@@ -72,13 +72,13 @@ $("#task-form-modal .btn-primary").click(function() {
     // close modal
     $("#task-form-modal").modal("hide");
 
-    // save in tasks array
+    //save in tasks array
     tasks.toDo.push({
       text: taskText,
       date: taskDate
     });
 
-    saveTasks();
+    //saveTasks();
     var saveTasks = function() {
       localStorage.setItem("tasks", JSON.stringify(tasks));
     };
@@ -93,15 +93,39 @@ $("#remove-tasks").on("click", function() {
   }
   saveTasks();
   $(".list-group").on("click", "p", function() {
+    $(".list-group").on("blur", "textarea", function() {
+      // get the textarea's current value/text
+      var text = $(this)
+        .val()
+        .trim();
+
+      // get the parent ul's id attribute
+      var status = $(this)
+        .closest(".list-group")
+        .attr("id")
+        .replace("list-", "");
+
+      // get the task's position in the list of other li elements
+      var index = $(this)
+        .closest(".list-group-item")
+        .index();
+    });
     var text = $(this)
       .text()
       .trim();
+
+    var textInput = $("<textarea>")
+      .addClass("form-control")
+      .val(text);
+
+    $(this).replaceWith(textInput);
+    textInput.trigger("focus");
   });
 });
 
-// load tasks for the first time
-loadTasks();
-var loadTasks = function() {
+  // load tasks for the first time
+  loadTasks();
+  var loadTasks = function() {
   tasks = JSON.parse(localStorage.getItem("tasks"));
 
   // if nothing in localStorage, create a new object to track all task status arrays
